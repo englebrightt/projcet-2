@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basketball Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #282c34;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #gameCanvas {
+      border: 2px solid white;
+      background: linear-gradient(to bottom, #87CEEB, #006400);
+    }
+
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <div id="scoreBoard">Score: 0</div>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreBoard = document.getElementById('scoreBoard');
+
+    let score = 0;
+    let ball = { x: 400, y: 550, radius: 15, dx: 0, dy: 0, isDragging: false };
+    const hoop = { x: 350, y: 100, width: 100, height: 10 };
+
+    // Draw the hoop
+    function drawHoop() {
+      ctx.fillStyle = 'red';
+      ctx.fillRect(hoop.x, hoop.y, hoop.width, hoop.height);
+    }
+
+    // Draw the ball
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'orange';
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Update ball position
+    function updateBall() {
+      if (!ball.isDragging) {
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+        ball.dy += 0.3; // gravity
+
+        // Bounce on floor
+        if (ball.y + ball.radius >= canvas.height) {
+          ball.dy *= -0.8;
+          ball.dx *= 0.9;
+          ball.y = canvas.height - ball.radius;
+        }
+
+        // Friction stop
+        if (Math.abs(ball.dx) < 0.1) ball.dx = 0;
+        if (Math.abs(ball.dy) < 0.1) ball.dy = 0;
+      }
+
+      // Check for scoring
+      if (
+        ball.y - ball.radius < hoop.y + hoop.height &&
+        ball.y + ball.radius > hoop.y &&
+        ball.x > hoop.x &&
+        ball.x < hoop.x + hoop.width
+      ) {
+        score++;
+        resetBall();
+        scoreBoard.textContent = `Score: ${score}`;
+      }
+    }
+
+    // Reset the ball position
+    function resetBall() {
+      ball.x = 400;
+      ball.y = 550;
+      ball.dx = 0;
+      ball.dy = 0;
+    }
+
+    // Draw everything
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawHoop();
+      drawBall();
+      updateBall();
+      requestAnimationFrame(draw);
+    }
+
+    // Handle mouse events
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const dist = Math.sqrt(
+        (mouseX - ball.x) ** 2 + (mouseY - ball.y) ** 2
+      );
+      if (dist <= ball.radius) {
+        ball.isDragging = true;
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (ball.isDragging) {
+        const rect = canvas.getBoundingClientRect();
+        ball.x = e.clientX - rect.left;
+        ball.y = e.clientY - rect.top;
+      }
+    });
+
+    canvas.addEventListener('mouseup', (e) => {
+      if (ball.isDragging) {
+        const rect = canvas.getBoundingClientRect();
+        const releaseX = e.clientX - rect.left;
+        const releaseY = e.clientY - rect.top;
+        ball.dx = (ball.x - releaseX) * 0.1;
+        ball.dy = (ball.y - releaseY) * 0.1;
+        ball.isDragging = false;
+      }
+    });
+
+    // Start the game loop
+    draw();
+  </script>
+</body>
+</html>

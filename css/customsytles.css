@@ -1,0 +1,53 @@
+body{
+    background-color:grey;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+
+}
+h1, h2, h3, h4, h5, h6{
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-large;
+    text-decoration: underline;
+    
+
+   
+}
+
+.tableau-embed iframe {
+    width: 100%; /* Full width */
+    max-width: 500px; /* Limit to a maximum width */
+    height: 300px; /* Fixed height */}
+    
+.box-model{
+    padding: 15px;
+    background-color:black;
+    border: 5px solid white;
+    margin: 2px;
+    text-align: center;
+}
+img{
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+width: 50%;    
+}
+
+.tabs {
+    display: flex;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+  }
+  a {
+    font-family: Arial, sans-serif;
+    color: azure;
+    text-align: left;
+}
+video.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    margin-top: 50px; /* Adds space above the video */
+}
